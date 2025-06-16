@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "outDir": "../dist/worker",
+    "strict": true,
+    "skipLibCheck": true, 
+    "baseUrl": ".",       
+    "paths": {
+      "@/*": ["../*"],
+      "@generated/prisma": ["../app/generated/prisma"]
+    }
+  },
+  "include": ["./worker.ts"]
+}
