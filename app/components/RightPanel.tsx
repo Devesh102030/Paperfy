@@ -11,7 +11,7 @@ export default function RightPanel({ paperId, userId }: { paperId: string, userI
   const [activeTab, setActiveTab] = useState<Tab>("overview");
 
   return (
-    <div className="fixed right-0 h-full w-[400px] bg-white dark:bg-neutral-800 border-l border-gray-200 dark:border-neutral-700 z-30 flex flex-col">
+    <div className="h-screen w-[400px] bg-white dark:bg-neutral-800 border-l border-gray-200 dark:border-neutral-700 z-30 flex flex-col">
       <OptionBar activeTab={activeTab} setActiveTab={setActiveTab} />
       <div className="flex-1 overflow-y-auto">
         {activeTab === "chat" && <Chat paperId={paperId} />}

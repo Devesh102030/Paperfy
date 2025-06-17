@@ -1,5 +1,5 @@
 import { getCurrentUser } from "../../lib/serverAuth";
-import Sidebar from "../../components/Sidebar";
+// import Sidebar from "../../components/Sidebar";
 // import Upload from "../../components/UploadSection";
 import { Chat } from "../../components/Chat";
 import { notFound } from "next/navigation";
@@ -7,6 +7,8 @@ import { PdfVeiwer } from "@/app/components/PdfVeiwer";
 import prisma from "@/app/lib/db";
 import { OptionBar } from "@/app/components/OptionBar";
 import RightPanel from "@/app/components/RightPanel";
+import PaperDashboard from "@/app/components/PaperDashboard";
+import { SidebarDemo } from "@/app/components/Sidebar";
 
 type Props = {
   params: {
@@ -30,22 +32,10 @@ const Paper = async ({ params }: Props) => {
   if (!paper) return notFound();
 
   return (
-    <div className="relative flex h-screen bg-gray-50 dark:bg-neutral-900">   
-      <div className="fixed top-0 left-0 h-full z-40">
-        <Sidebar />
-      </div>
-      
-      <div className="flex-1 ml-35 mr-85 overflow-y-auto"> 
-        <div className="min-h-full p-4 md:p-8">
-          <div className="max-w-3xl mx-auto">
-            <PaperPage pdfUrl={paper.pdfUrl}/>
-          </div>
-        </div>
-      </div>
-      
-      <div>
-        <RightPanel paperId={paperId} userId={user.id}/>
-      </div>
+    <div>   
+      <SidebarDemo>
+        <PaperDashboard pdfUrl={paper.pdfUrl} paperId={paperId} userId={user.id} />
+      </SidebarDemo>
     </div>
   );
 };

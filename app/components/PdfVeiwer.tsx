@@ -42,8 +42,8 @@ export function PdfVeiwer({ pdfUrl }: PdfViewerProps) {
   }
 
   return (
-    <div className="flex flex-col h-screen ">
-      <div className="bg-gray-100 p-2 flex items-center justify-between sticky top-0 z-10">
+    <div className="sticky flex flex-col h-screen ">
+      <div className="flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center space-x-2">
           <button
             onClick={() => setScale((prev) => Math.max(prev - 0.1, 0.5))}
