@@ -5,11 +5,11 @@ import axios from "axios";
 import { SidebarDemo } from "../components/Sidebar";
 import { MyPaperDashboard } from "../components/MyPapersDashboard";
 
-type MyPapersProps = {
+export default async function MyPapers({
+  searchParams,
+}: {
   searchParams: { page?: string };
-};
-
-export default async function MyPapers({ searchParams }: MyPapersProps) {
+}) {
   const user = await getCurrentUser();
 
   if (!user) {
