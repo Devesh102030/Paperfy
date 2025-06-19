@@ -81,7 +81,7 @@ export default function SigninPage() {
       </div>
     </form>
 
-    <div>Don't have an account? <a className="text-blue-400 underline" href="/auth/signup">Sign up</a></div>
+    <div> Do not have an account? <a className="text-blue-400 underline" href="/auth/signup">Sign up</a></div>
 
     </div>
   );
