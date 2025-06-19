@@ -4,30 +4,38 @@ services:
     runtime: docker
     image: 
       url: valkey/valkey
-    plan: free
-    
+    plan: starter
+    disk: # Optional: Add if persistence is needed
+      name: valkey-data
+      mountPath: /data
+      sizeGB: 10
 
   - type: pserv
     name: qdrant
     runtime: docker
     image: 
       url: qdrant/qdrant
-    plan: free
+    plan: starter
+    disk: # Optional: Add if persistence is needed
+      name: qdrant-data
+      mountPath: /qdrant/storage
+      sizeGB: 10
 
   - type: worker
     name: paperfy-worker
     runtime: docker
-    plan: free
+    plan: starter
     dockerfilePath: ./Dockerfile.worker
+    repo: https://github.com/your-org/your-repo # Add if needed
+    branch: main # Optional: Specify branch
     envVars:
       - key: REDIS_URL
         value: redis://valkey:6379
       - key: QDRANT_URL
         value: http://qdrant:6333
       - key: API_BASE_URL
-        value: https://your-vercel-app.vercel.app
+        value: https://paperfy.vercel.app # Replace with actual URL
       - key: COHERE_API_KEY
-        value: pxHHZy29DAsfH6TybW85qOuGB7OnHDfEcfaBUy0j
+        sync: false # Prompt in Render Dashboard
       - key: GOOGLE_API_KEY
-        value: AIzaSyBc0hFj0HTP-R3CEkWEKZGlUeZayOcbxKs
-
+        sync: false # Prompt in Render Dashboard
