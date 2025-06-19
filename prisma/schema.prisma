@@ -64,6 +64,7 @@ model Paper {
   title      String
   content    String
   overview   String?
+  audio      String?
   pdfUrl     String
   status     String      @default("pending")
   createdAt  DateTime    @default(now())

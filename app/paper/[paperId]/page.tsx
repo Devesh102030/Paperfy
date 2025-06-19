@@ -18,7 +18,7 @@ type Props = {
 
 const Paper = async ({ params }: Props) => {
 
-  const paperId = params.paperId;
+  const { paperId } = await params;
   const user = await getCurrentUser();
 
   if (!user) {
@@ -34,20 +34,17 @@ const Paper = async ({ params }: Props) => {
   return (
     <div>   
       <SidebarDemo>
-        <PaperDashboard pdfUrl={paper.pdfUrl} paperId={paperId} userId={user.id} />
+        <div className="flex flex-1 h-screen overflow-hidden">
+          <div className="max-w-5xl">
+            <PaperDashboard pdfUrl={paper.pdfUrl} paperId={paperId} userId={user.id} />
+          </div>
+        
+          <RightPanel paperId={paperId} userId={user.id} />
+        </div>
       </SidebarDemo>
     </div>
   );
 };
 
-
-
-function PaperPage({pdfUrl}:{pdfUrl: string}){
-  return (
-    <div className="h-full w-full">
-      <PdfVeiwer pdfUrl={pdfUrl} />
-    </div>
-  );
-}
 
 export default Paper;

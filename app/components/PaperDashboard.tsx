@@ -14,15 +14,13 @@ export default function PaperDashboard({
 }) {
   return (
     <div className="flex h-screen overflow-hidden">
-        <div className="flex-1 overflow-y-auto">
-            <div className="min-h-full p-4 md:p-8">
-            <div className="max-w-3xl mx-auto">
+        <div className="flex-1">
+            <div className="min-h-full">
+            <div className="w-full">
                 <PaperPage pdfUrl={pdfUrl} />
             </div>
             </div>
         </div>
-
-        <RightPanel paperId={paperId} userId={userId} />
     </div>
   );
 }

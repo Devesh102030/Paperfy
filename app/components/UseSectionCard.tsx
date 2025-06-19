@@ -1,18 +1,17 @@
 "use client";
 import React from "react";
 import { BackgroundGradient } from "./ui/background-gradient";
-import { IconAppWindow } from "@tabler/icons-react";
 
 
-export function UseSectionCard({headingOne,headingTwo}:{headingOne: string, headingTwo: string}) {
+export function UseSectionCard({headingOne,headingTwo,image}:{headingOne: string, headingTwo: string, image: string}) {
   return (
     <div>
-      <BackgroundGradient className="rounded-[22px] max-w-sm p-4 sm:p-10 bg-white dark:bg-zinc-900">
+      <BackgroundGradient className="rounded-[22px]  max-w-md p-4 sm:p-5 bg-white dark:bg-zinc-900">
         <img
-          src={``}
-          alt="jordans"
-          height="200"
-          width="200"
+          src={`${image}`}
+          alt="image"
+          height="400"
+          width="400"
           className="object-contain"
         />
         <p className="text-base sm:text-xl text-black mt-4 mb-2 dark:text-neutral-200">
@@ -27,3 +26,6 @@ export function UseSectionCard({headingOne,headingTwo}:{headingOne: string, head
     </div>
   );
 }
+
+
+// C:/Users/user/Desktop/js/final-project/images/drop.jpeg

@@ -1,20 +1,21 @@
 import { getCurrentUser } from "../lib/serverAuth";
 import { SidebarDemo } from "../components/Sidebar";
-import Upload from "../components/UploadSection";
-import { OptionBar } from "../components/OptionBar";
 import HomeDashboard from "../components/HomeDashboard";
+import { redirect } from "next/navigation";
 
 export default async function Home(){
     const user = await getCurrentUser();
     
     if (!user) {
-        return <p>Unauthorized</p>;
+        return redirect("/auth/signin");
     }
 
     return(
-        <div>  
+        <div className="flex h-screen w-screen">  
            <SidebarDemo>
-            <HomeDashboard></HomeDashboard>
+            <div className="flex-1 h-full w-full overflow-auto">
+                <HomeDashboard></HomeDashboard>
+            </div>
            </SidebarDemo>
         </div>
     )

@@ -1,6 +1,6 @@
-import { LayoutDashboard, MessageSquare, Notebook } from "lucide-react";
+import { LayoutDashboard, MessageSquare, Notebook, Speaker } from "lucide-react";
 
-type Tab = "chat" | "overview" | "notes";
+type Tab = "chat" | "overview" | "notes" | "audio";
 
 // Menu items.
 const items = [
@@ -18,6 +18,11 @@ const items = [
     label: "Notes", 
     value: "notes",
     icon: Notebook,
+  },
+  {
+    label: "Audio", 
+    value: "audio",
+    icon: Speaker,
   }
 ]
 
@@ -29,7 +34,7 @@ export function OptionBar({
   setActiveTab: (tab: Tab) => void;
 }) {
   return (
-    <div className="flex border-b border-gray-200 dark:border-neutral-700">
+    <div className="flex border-b border-gray-200 dark:border-neutral-700 p-1 space-x-2">
       {items.map((item, index) => (
         <button
           key={item.value}

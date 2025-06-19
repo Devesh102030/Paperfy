@@ -50,15 +50,19 @@ import {
   IconBrandGoogle,
   IconBrandOnlyfans,
 } from "@tabler/icons-react";
+import { Spinner } from "@/app/components/Spinner";
+import { DotLoader } from "@/app/components/DotLoader";
 
 export default function SigninPage() {
 
     const router = useRouter();
     const [email,setemail] = useState("");
     const [password,setpassword] = useState("");
+    const [loading, setLoading] = useState(false);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault(); // <== Prevent default form reload
+        setLoading(true);
         const res = await signIn("credentials", {
             email,
             password,
@@ -79,37 +83,48 @@ export default function SigninPage() {
       </p>
 
       <form className="my-8" onSubmit={handleSubmit}>
-  <LabelInputContainer className="mb-4">
-    <Label htmlFor="email">Email Address</Label>
-    <Input onChange={(e)=>setemail(e.target.value)} id="email" placeholder="projectmayhem@fc.com" type="email" />
-  </LabelInputContainer>
-  <LabelInputContainer className="mb-4">
-    <Label htmlFor="password">Password</Label>
-    <Input onChange={(e)=>setpassword(e.target.value)} id="password" placeholder="••••••••" type="password" />
-  </LabelInputContainer>
+        <LabelInputContainer className="mb-4">
+          <Label htmlFor="email">Email Address</Label>
+          <Input onChange={(e)=>setemail(e.target.value)} id="email" placeholder="projectmayhem@fc.com" type="email" />
+        </LabelInputContainer>
+        <LabelInputContainer className="mb-4">
+          <Label htmlFor="password">Password</Label>
+          <Input onChange={(e)=>setpassword(e.target.value)} id="password" placeholder="••••••••" type="password" />
+        </LabelInputContainer>
 
-  <button
-    className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]"
-    type="submit"
-  >
-    Log In &rarr;
-    <BottomGradient />
-  </button>
+        {!loading ? (
+          <button
+            className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]"
+            type="submit"
+          >
+            Log In &rarr;
+            <BottomGradient />
+          </button>
+        ) : (
+          <button
+            disabled
+            className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] disabled:opacity-100 disabled:text-white disabled:cursor-not-allowed"
+          >
+            <div className="flex flex-col justify-center items-center"> <DotLoader/> </div>
+          </button>
+        )}
 
-  <div className="my-8 h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-400 to-transparent dark:via-neutral-800" />
+      <div className="my-8 h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-400 to-transparent dark:via-neutral-800" />
 
-  <div className="flex flex-col space-y-4">
-    <button
-      type="button"
-      onClick={() => signIn("google", { callbackUrl: "/home" })}
-      className="group/btn shadow-input relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_#262626]"
-    >
-      <IconBrandGoogle className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-      <span className="text-sm text-neutral-700 dark:text-neutral-300">Google</span>
-      <BottomGradient />
-    </button>
-  </div>
-</form>
+      <div className="flex flex-col space-y-4">
+        <button
+          type="button"
+          onClick={() => signIn("google", { callbackUrl: "/home" })}
+          className="group/btn shadow-input relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_#262626]"
+        >
+          <IconBrandGoogle className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
+          <span className="text-sm text-neutral-700 dark:text-neutral-300">Google</span>
+          <BottomGradient />
+        </button>
+      </div>
+    </form>
+
+    <div>Don't have an account? <a className="text-blue-400 underline" href="/auth/signup">Sign up</a></div>
 
     </div>
   );
@@ -137,3 +152,5 @@ const LabelInputContainer = ({
     </div>
   );
 };
+
+

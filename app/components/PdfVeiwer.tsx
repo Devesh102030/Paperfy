@@ -43,7 +43,7 @@ export function PdfVeiwer({ pdfUrl }: PdfViewerProps) {
 
   return (
     <div className="sticky flex flex-col h-screen ">
-      <div className="flex items-center justify-between sticky top-0 z-10">
+      <div className="flex items-center justify-between border sticky top-0 z-10 p-2 bg-gray-100">
         <div className="flex items-center space-x-2">
           <button
             onClick={() => setScale((prev) => Math.max(prev - 0.1, 0.5))}
@@ -69,7 +69,7 @@ export function PdfVeiwer({ pdfUrl }: PdfViewerProps) {
           )}
         </div>
 
-        <div className="flex-1 overflow-auto bg-gray-50 p-4">
+        <div className="flex-1 overflow-y-auto bg-gray-50 border p-4">
           {isLoading && (
             <div className="flex justify-center items-center h-full">
               <div className="animate-pulse text-gray-500">Loading PDF...</div>

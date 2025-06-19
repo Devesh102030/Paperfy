@@ -152,10 +152,12 @@ export const LogoIcon = () => {
 const Dashboard = ({children}:{children: ReactNode}) => {
   return (
     <div className="flex flex-1">
-      <div className="flex h-full w-full flex-1 flex-col rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-neutral-900">
+      <div className="flex flex-1 bg-white rounded-tl-2xl">
         {children}
       </div>
     </div>
   );
 };
+
+//flex h-full w-full flex-1 flex-col rounded-tl-2xl border border-neutral-200 bg-white md:p-10 dark:border-neutral-700 dark:bg-neutral-900
 

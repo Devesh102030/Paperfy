@@ -11,6 +11,7 @@ import {
   IconBrandGoogle,
   IconBrandOnlyfans,
 } from "@tabler/icons-react";
+import { DotLoader } from "@/app/components/DotLoader";
 
 export default function Signup() {
 
@@ -20,9 +21,11 @@ export default function Signup() {
     const [email, setemail] = useState("");
     const [password, setpassword] = useState("");
     const [error,seterror] = useState("");
+    const [loading, setLoading] = useState(false);
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
+        setLoading(true);
         seterror("");
         
         axios.post("/api/auth/custom/signup",{
@@ -63,13 +66,21 @@ export default function Signup() {
           <Input  onChange={(e)=>setpassword(e.target.value)} id="password" placeholder="••••••••" type="password" />
         </LabelInputContainer>
 
-        <button
+        {!loading ? (<button
           className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]"
           type="submit"
         >
           Sign up &rarr;
           <BottomGradient />
         </button>
+        ):(
+          <button
+            disabled
+            className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] disabled:opacity-100 disabled:text-white disabled:cursor-not-allowed"
+          >
+            <div className="flex flex-col justify-center items-center"> <DotLoader/> </div>
+          </button>
+        )}
 
         <div className="my-8 h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-400 to-transparent dark:via-neutral-800" />
 
@@ -87,6 +98,7 @@ export default function Signup() {
           </button>
         </div>
       </form>
+      <div>Already have an account? <a className="text-blue-400 underline" href="/auth/signin">Log in</a></div>
     </div>
   );
 }

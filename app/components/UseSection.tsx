@@ -5,15 +5,18 @@ export function UseSection() {
     const headings = [
         {
             headingOne: "Drop Your Paper In",
-            headingTwo: "Easily drag and drop your PDF — no complex setup needed."
+            headingTwo: "Easily drag and drop your PDF — no complex setup needed.",
+            image: "images/newDrop.png"
         },
         {
             headingOne: "Let the AI Do the Reading",
-            headingTwo: "Get instant insights without skimming a single page."
+            headingTwo: "Get instant insights without skimming a single page.",
+            image: "images/newOverview.jpeg"
         },
         {
             headingOne: "Chat, Learn, Remember",
-            headingTwo: "Ask anything, get answers, and keep your notes in one place."
+            headingTwo: "Ask anything, get answers, and keep your notes in one place.",
+            image: "images/newChat.jpeg"
         }
     ]
   return (
@@ -29,10 +32,10 @@ export function UseSection() {
             <div
             key={index}
             className={`mb-4 max-w-[80%] ${
-                index % 2 === 0 ? "mr-auto": "ml-auto" 
+                index % 2 === 0 ? "mr-auto -translate-x-8" : "ml-auto translate-x-8"
             }`}
             >
-            <UseSectionCard headingOne={heading.headingOne} headingTwo={heading.headingTwo} />
+            <UseSectionCard headingOne={heading.headingOne} headingTwo={heading.headingTwo} image={heading.image} />
             </div>
         ))}
         </TracingBeam>
