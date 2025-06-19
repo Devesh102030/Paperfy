@@ -4,47 +4,44 @@ import { SidebarDemo } from "../components/Sidebar";
 import { MyPaperDashboard } from "../components/MyPapersDashboard";
 
 interface Paper {
-  id: string,
-  content: string,
-  overview: string,
-  pdfUrl: string,
-  createdAt: String,
-  title: string
-  status: string
+  id: string;
+  content: string;
+  overview: string;
+  pdfUrl: string;
+  createdAt: String;
+  title: string;
+  status: string;
 }
 
 interface MyPapersProps {
-    searchParams: {page?: string}
+  searchParams: { page?: string };
 }
 
-export default async function MyPapers({ searchParams }: MyPapersProps){
-    const user = await getCurrentUser();
-    
-    if (!user) {
-        return <p>Unauthorized</p>;
-    }
+export default async function MyPapers({ searchParams }: MyPapersProps) {
+  const user = await getCurrentUser();
 
-    const userId = user.id;
-    const { page } = await searchParams;
-    const pageNum = parseInt(page || "1");
-    const limit = 10;
+  if (!user) {
+    return <p>Unauthorized</p>;
+  }
 
-    const res = await axios.get("/api/getpapers",{
-        params:{
-            userId,
-            pageNum,
-            limit
-        }
-    })
+  const userId = user.id;
+  const { page } = searchParams;
+  const pageNum = parseInt(page || "1");
+  const limit = 10;
 
-    const { papers, totalPages, currentPage } = res.data;
+  const res = await axios.get("/api/getpapers", {
+    params: {
+      userId,
+      pageNum,
+      limit,
+    },
+  });
 
+  const { papers, totalPages, currentPage } = res.data;
 
-    return(
-      <SidebarDemo>
-        <MyPaperDashboard userId={userId} page={pageNum}></MyPaperDashboard>
-      </SidebarDemo>
-    )
+  return (
+    <SidebarDemo>
+      <MyPaperDashboard userId={userId} page={pageNum} />
+    </SidebarDemo>
+  );
 }
-
-
