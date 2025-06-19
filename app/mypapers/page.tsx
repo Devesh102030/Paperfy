@@ -1,21 +1,13 @@
+// app/mypapers/page.tsx
+
 import { getCurrentUser } from "../lib/serverAuth";
 import axios from "axios";
 import { SidebarDemo } from "../components/Sidebar";
 import { MyPaperDashboard } from "../components/MyPapersDashboard";
 
-interface Paper {
-  id: string;
-  content: string;
-  overview: string;
-  pdfUrl: string;
-  createdAt: String;
-  title: string;
-  status: string;
-}
-
-interface MyPapersProps {
+type MyPapersProps = {
   searchParams: { page?: string };
-}
+};
 
 export default async function MyPapers({ searchParams }: MyPapersProps) {
   const user = await getCurrentUser();
@@ -25,11 +17,10 @@ export default async function MyPapers({ searchParams }: MyPapersProps) {
   }
 
   const userId = user.id;
-  const { page } = searchParams;
-  const pageNum = parseInt(page || "1");
+  const pageNum = parseInt(searchParams.page || "1");
   const limit = 10;
 
-  const res = await axios.get("/api/getpapers", {
+  const res = await axios.get("http://localhost:3000/api/getpapers", {
     params: {
       userId,
       pageNum,
