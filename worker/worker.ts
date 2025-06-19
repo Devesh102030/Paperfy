@@ -12,8 +12,8 @@ import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { RunnableSequence } from "@langchain/core/runnables";
 
 const redisConnection = {
-    host: 'localhost',
-    port: 6379
+    host: process.env.REDIS_HOST || 'localhost',
+    port: Number(process.env.REDIS_PORT) || 6379
 }
 
 const headingKeywords = [
@@ -127,7 +127,7 @@ const worker = new Worker("file-upload-queue",
             });
 
             const vectorStore = await QdrantVectorStore.fromDocuments(splitDocs, embeddings, {
-                url: "http://localhost:6333",
+                url: process.env.QDRANT_URL || "http://localhost:6333",
                 collectionName: `pdf-${paperId}`,
             });
 

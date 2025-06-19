@@ -21,7 +21,7 @@ export const GET = async (req: NextRequest) => {
     });
 
     const vectorStore = await QdrantVectorStore.fromExistingCollection(embeddings, {
-      url: "http://localhost:6333",
+      url: process.env.QDRANT_URL || "http://localhost:6333",
       collectionName: `pdf-${paperId}`,
     });
 

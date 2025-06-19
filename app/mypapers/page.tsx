@@ -29,7 +29,7 @@ export default async function MyPapers({ searchParams }: MyPapersProps){
     const pageNum = parseInt(page || "1");
     const limit = 10;
 
-    const res = await axios.get("http://localhost:3000/api/getpapers",{
+    const res = await axios.get("/api/getpapers",{
         params:{
             userId,
             pageNum,
