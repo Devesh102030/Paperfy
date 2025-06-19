@@ -17,7 +17,7 @@ export async function MyPaperDashboard({userId,page}:{userId: string, page: numb
 
     const limit = 10;
 
-    const res = await axios.get("http://localhost:3000/api/getpapers",{
+    const res = await axios.get("/api/getpapers",{
         params:{
             userId,
             page,
