@@ -18,7 +18,13 @@ export async function POST(req: NextRequest) {
 
         const user = await getCurrentUser();
 
-        if(!user) return null;
+        if(!user){
+            return NextResponse.json({
+                message: "User not found"
+            },{
+                status: 500
+            })
+        };
 
         const paper = await prisma.paper.create({
             data:{
