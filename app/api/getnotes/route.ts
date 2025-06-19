@@ -20,7 +20,7 @@ export async function GET(req: NextRequest){
             }
         })
 
-        let notes: string[] = [];
+        const notes: string[] = [];
         for(let i=0; i<res.length; i++){
             notes.push(res[i].content);
         }

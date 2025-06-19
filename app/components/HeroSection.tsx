@@ -5,9 +5,8 @@ import React from "react";
 import { AuroraBackground } from "./ui/aurora-background";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useState, useEffect } from "react";
 
-interface user{ id: string; name?: string | null | undefined; email?: string | null | undefined; image?: string | null | undefined; }
+//interface user{ id: string; name?: string | null | undefined; email?: string | null | undefined; image?: string | null | undefined; }
 
 export function HeroSection() {
     const router = useRouter();

@@ -17,10 +17,10 @@ export default function Notes({ paperId, userId }: { paperId: string, userId: st
             setnotes(res.data.notes);
         }
         fetchNotes();
-    },[])
+    },[paperId, userId])
 
     async function saveNotes(content: string){
-        const res = await axios.post("/api/savenotes",{
+        await axios.post("/api/savenotes",{
             content,
             paperId,
             userId

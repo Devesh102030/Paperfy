@@ -7,9 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import {
-  IconBrandGithub,
   IconBrandGoogle,
-  IconBrandOnlyfans,
 } from "@tabler/icons-react";
 import { DotLoader } from "@/app/components/DotLoader";
 
@@ -20,25 +18,25 @@ export default function Signup() {
     const [name, setname] = useState("");
     const [email, setemail] = useState("");
     const [password, setpassword] = useState("");
-    const [error,seterror] = useState("");
+    //const [error,seterror] = useState("");
     const [loading, setLoading] = useState(false);
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setLoading(true);
-        seterror("");
+        //seterror("");
         
         axios.post("/api/auth/custom/signup",{
             name,
             email,
             password
         })
-        .then((res)=>{
+        .then(()=>{
             router.push("/home");
         })
         .catch((err)=>{
             console.log(err);
-            seterror(err.response?.data?.message || err.message || "Something went wrong")
+            //seterror(err.response?.data?.message || err.message || "Something went wrong")
         })
     }
 

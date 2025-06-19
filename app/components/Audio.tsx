@@ -9,10 +9,10 @@ interface OverviewAudioProps {
 }
 
 export default function OverviewAudio({ paperId }: OverviewAudioProps) {
-  const [text, setText] = useState("");
+  //const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [audioUrl, setAudioUrl] = useState("");
-  const [audio64, setAudio64] = useState("");
+  //const [audio64, setAudio64] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -33,7 +33,7 @@ export default function OverviewAudio({ paperId }: OverviewAudioProps) {
       const paperRes = await axios.get("/api/genrateaudio", { params: { paperId } });
       const overview = paperRes.data.overview;
       const plainText = removeMarkdown(overview);
-      setText(plainText);
+      //setText(plainText);
 
       // 2. Try fetching audio from DB
       const audioRes = await axios.get("/api/getaudio", { params: { paperId } });
@@ -44,7 +44,7 @@ export default function OverviewAudio({ paperId }: OverviewAudioProps) {
         const blob = base64ToBlob(existingAudio64);
         const url = URL.createObjectURL(blob);
         setAudioUrl(url);
-        setAudio64(existingAudio64);
+        //setAudio64(existingAudio64);
       } else {
         // 3. Audio not found — call Murf API
         const data = {
@@ -79,7 +79,7 @@ export default function OverviewAudio({ paperId }: OverviewAudioProps) {
         const blob = base64ToBlob(base64Audio);
         const url = URL.createObjectURL(blob);
         setAudioUrl(url);
-        setAudio64(base64Audio);
+        //setAudio64(base64Audio);
       }
     } catch (error) {
       console.error("Error fetching audio:", error);

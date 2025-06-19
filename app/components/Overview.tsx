@@ -25,7 +25,7 @@ export default function Overview({ paperId}: { paperId: string }) {
             setLoading(false);
         }
         fetchOverview();
-  },[])
+  },[paperId])
 
   return (
     <div className="flex flex-col h-full">

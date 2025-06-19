@@ -5,7 +5,7 @@ export async function POST(req: NextRequest){
     const body = await req.json();
     const {content,paperId,userId} = body;
     try{
-        const res = await prisma.note.create({
+        await prisma.note.create({
             data:{
                 content,
                 userId,

@@ -1,48 +1,16 @@
-// "use client";
-// import { cn } from "@/lib/utils";
-// import React, { useState, createContext, useContext } from "react";
-// import { AnimatePresence, motion } from "motion/react";
-// import { IconMenu2, IconX } from "@tabler/icons-react";
-
-// export default function Sidebar() {
-//   return (
-//     <div className="fixed top-0 left-0 h-full w-48 bg-white border-r border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 z-40">
-//       <div className="p-4 h-full overflow-y-auto">
-//         <h2 className="text-xl font-semibold dark:text-white">Application</h2>
-//         <nav className="mt-4">
-//           <ul className="space-y-2">
-//             <li>
-//               <a href="/home" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-neutral-700 rounded">
-//                 Home
-//               </a>
-//             </li>
-//             <li>
-//               <a href="/mypapers" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-neutral-700 rounded">
-//                 My Papers
-//               </a>
-//             </li>
-//           </ul>
-//         </nav>
-//       </div>
-//     </div>
-//   );
-// }
-
-
 "use client";
 import React, { ReactNode, useState } from "react";
 import { Sidebar } from "./ui/Sidebar";
-import { SidebarLink, SidebarProvider, SidebarBody } from "./ui/Sidebar";
+import { SidebarLink, SidebarBody } from "./ui/Sidebar";
 import {
   IconArrowLeft,
   IconBrandTabler,
-  IconSettings,
   IconUserBolt,
 } from "@tabler/icons-react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
-import Upload from "./UploadSection";
+import Image from "next/image";
 
 export function SidebarDemo({children}:{children: ReactNode}) {
   const links = [
@@ -103,8 +71,8 @@ export function SidebarDemo({children}:{children: ReactNode}) {
                 label: session.user?.name || "Guest",
                 href: "#",
                 icon: (
-                  <img
-                    src= {session.user?.image || "https://www.google.com/url?sa=i&url=https%3A%2F%2Fsbcf.fr%2Fen%2Fdefault-avatar%2F&psig=AOvVaw0GlMKARIQeemjRLhyso0jt&ust=1750257700960000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCLizwpfY-I0DFQAAAAAdAAAAABAM"}
+                  <Image
+                    src= {session.user?.image || "/default-avatar.jpeg"}
                     className="h-7 w-7 shrink-0 rounded-full"
                     width={50}
                     height={50}
@@ -116,7 +84,9 @@ export function SidebarDemo({children}:{children: ReactNode}) {
           </div>
         </SidebarBody>
       </Sidebar>
-      <Dashboard children={children} />
+      <Dashboard>
+        {children}
+      </Dashboard>
     </div>
   );
 }

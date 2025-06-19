@@ -1,56 +1,13 @@
-// "use client"
-// import React, { useState } from 'react';
-// import { useRouter } from 'next/navigation';
-// import { signIn } from 'next-auth/react';
-
-// export default function SignInPage() {
-//     const router = useRouter();
-//     const [email,setemail] = useState("");
-//     const [password,setpassword] = useState("");
-//     return (
-//         <div>
-
-//             <h1>Sign In</h1>
-//             <input onChange={(e)=>setemail(e.target.value)} type='text' placeholder='Enter your email'></input>
-//             <input onChange={(e) => setpassword(e.target.value)} type='password' placeholder='Password'></input>
-
-//             <button onClick={async ()=>{
-//                 const res = await signIn("credentials",{
-//                     email: email,
-//                     password: password,
-//                     redirect: false
-//                 });
-//                 console.log(res);
-//                 if(res?.ok)
-//                 router.push("/dashboard");
-//             }}>Login with email</button>
-
-//             <br />
-
-//             <button onClick={async ()=>{
-//                 await signIn("google", { callbackUrl: "/dashboard" });
-//             }}>Login With Google</button>
-//             <br />
-
-//         </div>
-//     );
-// }
-
-
 "use client"
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios"
 import { signIn } from "next-auth/react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import {
-  IconBrandGithub,
   IconBrandGoogle,
-  IconBrandOnlyfans,
 } from "@tabler/icons-react";
-import { Spinner } from "@/app/components/Spinner";
 import { DotLoader } from "@/app/components/DotLoader";
 
 export default function SigninPage() {

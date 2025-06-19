@@ -35,7 +35,7 @@ export function OptionBar({
 }) {
   return (
     <div className="flex border-b border-gray-200 dark:border-neutral-700 p-1 space-x-2">
-      {items.map((item, index) => (
+      {items.map((item) => (
         <button
           key={item.value}
           onClick={() => setActiveTab(item.value as Tab)}

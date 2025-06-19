@@ -5,7 +5,7 @@ export async function POST(req: NextRequest){
     const body = await req.json();
     const {paperId,audio} = body;
     try{
-        const res = await prisma.paper.update({
+        await prisma.paper.update({
             where:{
                 id: paperId
             },

@@ -1,4 +1,3 @@
-import { getCurrentUser } from "../lib/serverAuth";
 import axios from "axios";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
@@ -9,7 +8,7 @@ interface Paper {
     content: string,
     overview: string,
     pdfUrl: string,
-    createdAt: String,
+    createdAt: string,
     title: string
     status: string
 }
@@ -107,7 +106,7 @@ function extractCleanedIntro(text: string): string {
 
   if (index === -1) return "Section not found";
 
-  let intro = text.slice(0, index).trim();
+  const intro = text.slice(0, index).trim();
 
   return intro.trim();
 }

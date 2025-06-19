@@ -36,7 +36,7 @@ const Paper = async ({ params }: Props) => {
       <SidebarDemo>
         <div className="flex flex-1 h-screen overflow-hidden">
           <div className="max-w-5xl">
-            <PaperDashboard pdfUrl={paper.pdfUrl} paperId={paperId} userId={user.id} />
+            <PaperDashboard pdfUrl={paper.pdfUrl} />
           </div>
         
           <RightPanel paperId={paperId} userId={user.id} />
