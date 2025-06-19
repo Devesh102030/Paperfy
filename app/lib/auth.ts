@@ -45,6 +45,7 @@ export const NEXT_AUTH_CONFIG: AuthOptions = {
                 if(!isValid) throw new Error("Incorrect password");
 
                 // Remove password from returned user object
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const { password, ...userCredentials } = user;
 
                 return userCredentials;

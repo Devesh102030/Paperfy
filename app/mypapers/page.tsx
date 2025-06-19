@@ -1,7 +1,6 @@
 // app/mypapers/page.tsx
 
 import { getCurrentUser } from "../lib/serverAuth";
-import axios from "axios";
 import { SidebarDemo } from "../components/Sidebar";
 import { MyPaperDashboard } from "../components/MyPapersDashboard";
 
