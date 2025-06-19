@@ -3,6 +3,7 @@ import axios from "axios";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useEffect, useState } from "react";
 
 interface Paper {
     id: string,
@@ -14,19 +15,30 @@ interface Paper {
     status: string
 }
 
-export async function MyPaperDashboard({userId,page}:{userId: string, page: number}){
+export function MyPaperDashboard({userId,page}:{userId: string, page: number}){
 
+    const [papers,setpapers] = useState<Paper[]>([]);
+    const [totalPages,settotalPages] = useState(0);
+    const [currentPage,setcurrentPage] = useState(1);
     const limit = 10;
 
-    const res = await axios.get("/api/getpapers",{
-        params:{
-            userId,
-            page,
-            limit
-        }
-    })
+    useEffect(()=>{
+      async function fetchPapers(){
+        const res = await axios.get("/api/getpapers",{
+          params:{
+              userId,
+              page,
+              limit
+          }
+        })
+        setpapers(res.data.papers);
+        settotalPages(res.data.totalPages);
+        setcurrentPage(res.data.currentPage);
+      }
+      fetchPapers();
+    },[userId])
     
-    const { papers, totalPages, currentPage } = res.data;
+    // const { papers, totalPages, currentPage } = res.data;
 
     return(
         <div className="flex-1 overflow-y-auto">

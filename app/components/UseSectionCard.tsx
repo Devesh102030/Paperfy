@@ -8,7 +8,7 @@ export function UseSectionCard({headingOne,headingTwo,image}:{headingOne: string
     <div>
       <BackgroundGradient className="rounded-[22px]  max-w-md p-4 sm:p-5 bg-white dark:bg-zinc-900">
         <Image
-          src={`${image}`}
+          src={`/${image}`}
           alt="image"
           height="400"
           width="400"
