@@ -8,7 +8,7 @@ import { MyPaperDashboard } from "../components/MyPapersDashboard";
 export default async function MyPapers({
   searchParams,
 }: {
-  searchParams: { page?: string };
+  searchParams: Promise<{ page?: string }>;
 }) {
   const user = await getCurrentUser();
 
@@ -17,7 +17,10 @@ export default async function MyPapers({
   }
 
   const userId = user.id;
-  const pageNum = parseInt(searchParams.page || "1");
+  
+  // Await the searchParams promise
+  const resolvedSearchParams = await searchParams;
+  const pageNum = parseInt(resolvedSearchParams.page || "1");
   const limit = 10;
 
   const res = await axios.get("http://localhost:3000/api/getpapers", {
