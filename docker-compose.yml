@@ -21,3 +21,4 @@ worker:
       REDIS_PORT: 6379
       REDIS_URL: redis://valkey:6379
       QDRANT_URL: http://qdrant:6333
+      API_BASE_URL: https://paperfy.vercel.app

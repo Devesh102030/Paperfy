@@ -27,6 +27,8 @@ export default function Upload() {
                 pdfUrl: file.ufsUrl,
               });
 
+              console.log(response);
+
               const paperId = response.data.paper.id;
               if (!paperId) throw new Error("Paper ID missing");
 
