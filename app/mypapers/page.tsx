@@ -21,15 +21,15 @@ export default async function MyPapers({
   // Await the searchParams promise
   const resolvedSearchParams = await searchParams;
   const pageNum = parseInt(resolvedSearchParams.page || "1");
-  const limit = 10;
+  //const limit = 10;
 
-  const res = await axios.get("http://localhost:3000/api/getpapers", {
-    params: {
-      userId,
-      pageNum,
-      limit,
-    },
-  });
+  // const res = await axios.get("http://localhost:3000/api/getpapers", {
+  //   params: {
+  //     userId,
+  //     pageNum,
+  //     limit,
+  //   },
+  // });
 
   //const { papers, totalPages, currentPage } = res.data;
 

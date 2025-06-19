@@ -45,7 +45,7 @@ export const NEXT_AUTH_CONFIG: AuthOptions = {
                 if(!isValid) throw new Error("Incorrect password");
 
                 // Remove password from returned user object
-                const { password: _, ...userCredentials } = user;
+                const { password, ...userCredentials } = user;
 
                 return userCredentials;
             }
