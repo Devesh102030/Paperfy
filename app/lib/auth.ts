@@ -4,6 +4,20 @@ import {compare} from "bcryptjs"
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google"; 
+import { JWT } from "next-auth/jwt";
+import { Session } from "next-auth";
+
+// Define proper types for credentials
+interface Credentials {
+    email: string;
+    password: string;
+}
+
+// Define session callback parameters
+interface SessionCallbackParams {
+    session: Session;
+    token: JWT;
+}
 
 export const NEXT_AUTH_CONFIG: AuthOptions = {
     adapter: PrismaAdapter(prisma),
@@ -14,7 +28,7 @@ export const NEXT_AUTH_CONFIG: AuthOptions = {
                 email: {label:"Email", type: "text", placeholder:"name@example.com"},
                 password: {label: "Password", type:"password", placeholder:"password"}
             },
-            async authorize(credentials: any){
+            async authorize(credentials: Credentials | undefined){
                 if(!credentials?.email || !credentials?.password){
                     throw new Error("Missing email or password")
                 }
@@ -30,7 +44,8 @@ export const NEXT_AUTH_CONFIG: AuthOptions = {
                 const isValid = await compare(credentials.password,user.password);
                 if(!isValid) throw new Error("Incorrect password");
 
-                const {password, ...userCredentials} = user;
+                // Remove password from returned user object
+                const { password: _, ...userCredentials } = user;
 
                 return userCredentials;
             }
@@ -48,13 +63,15 @@ export const NEXT_AUTH_CONFIG: AuthOptions = {
         signIn: "/auth/signin",
     },
     callbacks: {
-    async jwt({ token, user }) {
-        if (user) token.id = user.id;
-        return token;
-    },
-    async session({ session, token }: any) {
-        if (session.user) session.user.id = token.id;
-        return session;
-    }
+        async jwt({ token, user }) {
+            if (user) token.id = user.id;
+            return token;
+        },
+        async session({ session, token }: SessionCallbackParams) {
+            if (session.user) {
+                session.user.id = token.id as string;
+            }
+            return session;
+        }
     }
 }

@@ -31,7 +31,7 @@ export default async function MyPapers({
     },
   });
 
-  const { papers, totalPages, currentPage } = res.data;
+  //const { papers, totalPages, currentPage } = res.data;
 
   return (
     <SidebarDemo>

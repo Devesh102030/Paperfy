@@ -22,13 +22,14 @@ export default function Upload() {
               if (!file) return;
               
               try {
-                const action = await axios.post("/api/savepaper", {
+                await axios.post("/api/savepaper", {
                   title: file.name,
                   pdfUrl: file.ufsUrl,
                 });
                 setPdfUrl(file.ufsUrl);
                 setUploaded(true);
               } catch (error) {
+                console.log(error);
                 alert("Error uploading file");
               }
             }}
