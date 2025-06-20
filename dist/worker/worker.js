@@ -15,10 +15,14 @@ const os_1 = __importDefault(require("os"));
 const path_1 = __importDefault(require("path"));
 const google_genai_1 = require("@langchain/google-genai");
 const runnables_1 = require("@langchain/core/runnables");
-const redisConnection = {
-    host: 'localhost',
-    port: 6379
-};
+const ioredis_1 = __importDefault(require("ioredis"));
+// const redisConnection = {
+//     host: process.env.REDIS_HOST || 'localhost',
+//     port: Number(process.env.REDIS_PORT) || 6379
+// }
+const redisConnection = new ioredis_1.default("redis://default:BBEFuBpgdRcjapOtuuPsKVaihyxEZewS@turntable.proxy.rlwy.net:33985", {
+    maxRetriesPerRequest: null
+});
 const headingKeywords = [
     "abstract",
     "introduction",
@@ -107,7 +111,9 @@ const worker = new bullmq_1.Worker("file-upload-queue", async (job) => {
             apiKey: "pxHHZy29DAsfH6TybW85qOuGB7OnHDfEcfaBUy0j"
         });
         const vectorStore = await qdrant_1.QdrantVectorStore.fromDocuments(splitDocs, embeddings, {
-            url: "http://localhost:6333",
+            // url: process.env.QDRANT_URL || "http://localhost:6333",
+            url: "https://c1ced9de-55f4-4ece-9fb5-12d97bf51073.us-west-2-0.aws.cloud.qdrant.io",
+            apiKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIn0.Qkz1tL1HMpcIgXkHc8WzP9jJZGd8xMdKt8VnpfecDKI",
             collectionName: `pdf-${paperId}`,
         });
         await vectorStore.addDocuments(splitDocs);

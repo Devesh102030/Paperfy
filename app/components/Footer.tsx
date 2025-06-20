@@ -5,7 +5,7 @@ export function Footer(){
                 
                 <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 gap-3 md:gap-8 py-10 max-sm:max-w-sm max-sm:mx-auto gap-y-8">
                     <div className="col-span-full mb-10 lg:col-span-3 lg:mb-0">
-                        <p className="text-3xl font-bold">Peperfy</p>
+                        <p className="text-3xl font-bold">Paperfy</p>
                         <p className="py-8 text-sm text-gray-500 lg:max-w-xs text-center lg:text-left">Trusted by thousands of students and researchers worldwide. Got a question? We’re here to help.</p>
                         <a href="javascript:;"  className="py-2.5 px-5 h-9 block w-fit bg-indigo-600 rounded-full shadow-sm text-xs text-white mx-auto transition-all  duration-500 hover:bg-indigo-700 lg:mx-0">
                             Contact us

@@ -2,13 +2,25 @@ import prisma from "@/app/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/app/lib/serverAuth";
 import {Queue} from "bullmq";
+//import IORedis from 'ioredis';
+import redis from "@/lib/redis";
+
+// const connection = new IORedis("redis://default:BBEFuBpgdRcjapOtuuPsKVaihyxEZewS@turntable.proxy.rlwy.net:33985",{
+//     maxRetriesPerRequest: null
+// });
+
+// await connection.connect();
 
 const queue = new Queue("file-upload-queue",{
-  connection:{
-    host: process.env.REDIS_HOST || 'localhost',
-    port: Number(process.env.REDIS_PORT) || 6379
-  }
+    connection: redis
 });
+
+// const queue = new Queue("file-upload-queue",{
+//   connection:{
+//     host: process.env.REDIS_HOST || 'localhost',
+//     port: Number(process.env.REDIS_PORT) || 6379
+//   }
+// });
 
 
 export async function POST(req: NextRequest) {

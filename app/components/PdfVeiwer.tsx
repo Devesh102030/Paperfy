@@ -43,11 +43,11 @@ export function PdfVeiwer({ pdfUrl }: PdfViewerProps) {
 
   return (
     <div className="sticky flex flex-col h-screen ">
-      <div className="flex items-center justify-between border sticky top-0 z-10 p-2 bg-gray-100">
+      <div className="flex items-center justify-between border sticky top-0 z-10 px-5 py-2 bg-gray-100">
         <div className="flex items-center space-x-2">
           <button
             onClick={() => setScale((prev) => Math.max(prev - 0.1, 0.5))}
-            className="px-3 py-1 bg-white border rounded hover:bg-gray-50 disabled:opacity-50"
+            className="px-3 py-1 bg-white border rounded font-semibold text-xl hover:bg-gray-50 disabled:opacity-50"
             disabled={scale <= 0.5}
           >
           -
@@ -55,7 +55,7 @@ export function PdfVeiwer({ pdfUrl }: PdfViewerProps) {
           <span className="text-sm w-12 text-center">{Math.round(scale * 100)}%</span>
           <button
             onClick={() => setScale((prev) => Math.min(prev + 0.1, 2.0))}
-            className="px-3 py-1 bg-white border rounded hover:bg-gray-50 disabled:opacity-50"
+            className="px-3 py-1 bg-white border rounded font-semibold hover:bg-gray-50 disabled:opacity-50"
             disabled={scale >= 2.0}
           >
             +
@@ -67,7 +67,7 @@ export function PdfVeiwer({ pdfUrl }: PdfViewerProps) {
               {numPages} page{numPages !== 1 ? "s" : ""}
             </div>
           )}
-        </div>
+      </div>
 
         <div className="flex-1 overflow-y-auto bg-gray-50 border p-4">
           {isLoading && (

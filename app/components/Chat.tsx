@@ -1,17 +1,73 @@
 "use client"
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import { PlaceholdersAndVanishInput } from "./ui/placeholders-and-vanish-input";
 
 export function Chat({ paperId }: { paperId: string }) {
   const [query, setquery] = useState("");
   const [messages, setmessages] = useState<{ role: "user" | "ai"; text: string }[]>([]);
-
+  const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [initialized, setInitialized] = useState(false);
+
+  const placeholders = [
+    "Ask anything about this paper...",
+    "What are the key findings?",
+    "Summarize this section for me",
+  ];
+
+  useEffect(() => {
+    const stored = localStorage.getItem(`chat-${paperId}`);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          setmessages(parsed);
+        }
+      } catch (e) {
+        console.error("Failed to parse localStorage data", e);
+      }
+    }
+    setInitialized(true);
+  }, [paperId]);
 
   // Scroll to bottom on new message
-  useEffect(() => {
+   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (initialized) {
+      localStorage.setItem(`chat-${paperId}`, JSON.stringify(messages));
+    }
+  }, [messages, paperId, initialized]);
+
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const userMessage: { role: "user", text: string } = { role: "user", text: query };
+    setmessages((prev) => [...prev, userMessage]);
+    setquery("");
+    setLoading(true);
+
+    try {
+      const res = await axios.get("/api/chat", {
+        params: {
+          message: query,
+          paperId,
+        },
+      });
+
+      const aiMessage: { role: "ai", text: string } = { role: "ai", text: res.data.answer };
+      setmessages((prev) => [...prev, aiMessage]);
+
+    }catch (err) {
+
+      console.error("Error:", err);
+      const aiMessage: { role: "ai", text: string } = { role: "ai", text: "Sorry, Something went wrong"};
+      setmessages((prev) => [...prev, aiMessage]);
+
+    }finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -42,40 +98,23 @@ export function Chat({ paperId }: { paperId: string }) {
             </div>
           ))
         )}
+
+        {loading && (
+          <div className="px-4 py-2 rounded-lg text-black text-sm self-start mr-auto animate-pulse">
+            Thinking...
+          </div>
+        )}
+
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Chat input */}
-      <div className="p-4 border-t dark:border-neutral-700">
-        <div className="flex gap-2">
-          <input
-            value={query}
-            onChange={(e) => setquery(e.target.value)}
-            type="text"
-            placeholder="Ask a question..."
-            className="flex-1 border rounded-lg px-4 py-2 dark:bg-neutral-700 dark:border-neutral-600"
-          />
-          <button
-            onClick={async () => {
-              const userMessage: { role: "user", text: string } = { role: "user", text: query };
-              setmessages((prev) => [...prev, userMessage]);
-              setquery("");
 
-              const res = await axios.get("/api/chat", {
-                params: {
-                  message: query,
-                  paperId,
-                },
-              });
-
-              const aiMessage: { role: "ai", text: string } = { role: "ai", text: res.data.answer };
-              setmessages((prev) => [...prev, aiMessage]);
-            }}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg"
-          >
-            Send
-          </button>
-        </div>
+      <div className="mb-4 flex flex-col justify-center  items-center px-4">
+        <PlaceholdersAndVanishInput
+          placeholders={placeholders}
+          onChange={(e) => setquery(e.target.value)}
+          onSubmit={onSubmit}
+        />
       </div>
     </div>
   );

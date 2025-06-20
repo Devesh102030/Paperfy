@@ -17,12 +17,13 @@ export default function Overview({ paperId}: { paperId: string }) {
                     paperId
                 }
             })
-            console.log(res.data.overview);
-            //const formattedOverview = res.data.overview.replace(/\\n/g, '\n');
             
-            setoverview(res.data.overview);
-            
-            setLoading(false);
+            if(res.data.overview){
+              setoverview(res.data.overview);
+              setLoading(false);
+            }else{
+              setTimeout(fetchOverview,2000);
+            }
         }
         fetchOverview();
   },[paperId])

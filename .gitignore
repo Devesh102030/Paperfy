@@ -47,3 +47,7 @@ next-env.d.ts
 /prisma/migrations
 /prisma/*.db
 /prisma/*.db-journal
+
+#dist
+/dist
+/worker

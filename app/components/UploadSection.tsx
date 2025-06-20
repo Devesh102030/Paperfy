@@ -5,12 +5,20 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import type { OurFileRouter } from "../server/uploadthing";
+import { useState } from "react";
+import { Spinner } from "./Spinner";
 
 export default function Upload() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   return (
     <div className="flex items-center justify-center w-full">
+      {loading && (
+        <div className="fixed inset-0 bg-white/80 dark:bg-black/80 flex items-center justify-center z-50">
+          <Spinner />
+        </div>
+      )}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -22,6 +30,7 @@ export default function Upload() {
           onClientUploadComplete={async (res) => {
             const file = res[0];
             try {
+              setLoading(true);
               const response = await axios.post("/api/savepaper", {
                 title: file.name,
                 pdfUrl: file.ufsUrl,
@@ -62,72 +71,5 @@ export default function Upload() {
     </div>
   );
 }
-
-
-// type Props = {
-//   setuploded: Dispatch<SetStateAction<boolean>>;
-// };
-
-// type NotUploadedProps = {
-//   setUploaded: Dispatch<SetStateAction<boolean>>;
-//   setPdfUrl: Dispatch<SetStateAction<string | null>>;
-// };
-
-// type UploadedProps = {
-//   pdfUrl: string;
-// };
-
-// export default function Upload() {
-//   const [uploaded, setUploaded] = useState(false);
-//   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
-
-//   return (
-//     <div className="h-full w-full">
-//       {!uploaded && (
-//             <PaperNotUploaded
-//             setUploaded={setUploaded}
-//             setPdfUrl={setPdfUrl}
-//             />
-//         )}
-//         {uploaded && pdfUrl && <PaperUploaded pdfUrl={pdfUrl} />}
-//     </div>
-//   );
-// }
-
-// function PaperNotUploaded({ setUploaded, setPdfUrl }: NotUploadedProps) {
-//   return (
-//     <div className="flex items-center justify-center w-full h-full">
-//       <UploadDropzone<OurFileRouter, "paperUpload">
-//         className="bg-slate-800 ut-label:text-lg ut-allowed-content:ut-uploading:text-red-300"
-//         endpoint="paperUpload"
-//         onClientUploadComplete={async (res) => {
-//           const file = res[0];
-//           const action = await axios.post("/api/savepaper", {
-//             title: file.name,
-//             pdfUrl: file.ufsUrl,
-//           });
-
-//           if (!action) {
-//             alert("Error uploading");
-//           } else {
-//             setPdfUrl(file.ufsUrl);
-//             setUploaded(true);
-//           }
-//         }}
-//         onUploadError={(error: Error) => {
-//           alert(`ERROR! ${error.message}`);
-//         }}
-//       />
-//     </div>
-//   );
-// }
-
-// function PaperUploaded({ pdfUrl }: UploadedProps) {
-//   return (
-//     <div>
-//       <PdfVeiwer pdfUrl={pdfUrl} />
-//     </div>
-//   );
-// }
 
 

@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import { PlaceholdersAndVanishInput } from "./ui/placeholders-and-vanish-input";
 
 export default function Notes({ paperId, userId }: { paperId: string, userId: string }) {
     const [notes, setnotes] = useState<string[]>([]);
     const [text,settext] = useState<string>("");
+
+     const placeholders = [
+        "Write your thoughts about this paper...",
+        "Summarize key points or observations here",
+        "Highlight important methods or results",
+    ];
 
     useEffect(()=>{
         async function fetchNotes(){
@@ -26,6 +32,15 @@ export default function Notes({ paperId, userId }: { paperId: string, userId: st
             userId
         })
     }
+
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        console.log("submitted");
+        const temp = text;
+        settext("");
+        setnotes([...notes,temp]);
+        await saveNotes(temp);
+    };
     
   return (
     <div className="flex flex-col h-full">
@@ -55,7 +70,15 @@ export default function Notes({ paperId, userId }: { paperId: string, userId: st
             }
         </div>
 
-        <div className="p-4 border-t dark:border-neutral-700">
+        <div className="mb-4 flex flex-col justify-center  items-center px-4">
+                <PlaceholdersAndVanishInput
+                  placeholders={placeholders}
+                  onChange={(e) => settext(e.target.value)}
+                  onSubmit={onSubmit}
+                />
+        </div>
+
+        {/* <div className="p-4 border-t dark:border-neutral-700">
             <div className="flex gap-2">
                 <input
                     value={text}
@@ -84,7 +107,7 @@ export default function Notes({ paperId, userId }: { paperId: string, userId: st
                     Save
                 </button>
             </div>
-        </div>
+        </div> */}
     </div>
   );
 }

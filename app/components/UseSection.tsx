@@ -22,7 +22,7 @@ export function UseSection() {
   return (
     <div className="relative flex flex-col gap-4 items-center justify-center px-4 mt-16">
         <div className="font-semibold text-base md:text-4xl dark:text-neutral-200">
-          How Peperfy Works
+          How Paperfy Works
         </div>
         <div className="font-extralight text-base md:text-2xl dark:text-neutral-200 mb-16">
           From upload to insight. A seamless journey powered by AI.

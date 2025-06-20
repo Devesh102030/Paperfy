@@ -18,6 +18,8 @@ export default function OverviewAudio({ paperId }: OverviewAudioProps) {
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
+  const [audioLoaded, setAudioLoaded] = useState(false);
+  const [overview, setOverview] = useState("");
 
   const formatTime = (time: number) => {
     if (!isFinite(time) || isNaN(time)) return "0:00";
@@ -34,6 +36,7 @@ export default function OverviewAudio({ paperId }: OverviewAudioProps) {
       const overview = paperRes.data.overview;
       const plainText = removeMarkdown(overview);
       //setText(plainText);
+      setOverview(plainText);
 
       // 2. Try fetching audio from DB
       const audioRes = await axios.get("/api/getaudio", { params: { paperId } });
@@ -142,12 +145,19 @@ export default function OverviewAudio({ paperId }: OverviewAudioProps) {
     audioRef.current.currentTime = seekTime;
   };
 
+  
+  useEffect(() => {
+    if (!audioLoaded) {
+      fetchAudioAndText().then(() => setAudioLoaded(true));
+    }
+  }, [fetchAudioAndText, audioLoaded]);
+
   // Calculate progress percentage with proper bounds checking
   const progressPercentage = duration > 0 ? Math.max(0, Math.min(100, (currentTime / duration) * 100)) : 0;
 
-  useEffect(() => {
-    fetchAudioAndText();
-  }, [fetchAudioAndText]);
+  // useEffect(() => {
+  //   fetchAudioAndText();
+  // }, [fetchAudioAndText]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -219,8 +229,9 @@ export default function OverviewAudio({ paperId }: OverviewAudioProps) {
   return (
     <div className="space-y-4">
       {loading ? (
-        <div className="flex flex-col justify-center items-center"><Spinner/></div>
+        <div className="flex flex-1 h-screen justify-center items-center"><Spinner/></div>
       ) : audioUrl ? (
+        <>
         <div className="m-6 mt-6 sm:mt-10 relative z-10 rounded-xl shadow-xl">
           <audio 
             ref={audioRef} 
@@ -333,6 +344,15 @@ export default function OverviewAudio({ paperId }: OverviewAudioProps) {
             </div>
           </div>
         </div>
+        {overview && (
+            <div className="m-8 p-4 bg-slate-50 dark:bg-slate-800 rounded-xl shadow-md">
+              <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-2">Transcript</h3>
+              <p className="text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
+                {overview}
+              </p>
+            </div>
+        )}
+        </>
       ) : (
         <div>No audio available</div>
       )}

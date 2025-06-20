@@ -93,16 +93,22 @@ export function SidebarDemo({children}:{children: ReactNode}) {
 export const Logo = () => {
   return (
     <a
-      href="#"
+      href="/home"
       className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black"
     >
-      <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
+      <Image
+        src= {"/icon-removebg-preview.png"}
+        className="h-7 w-6 "
+        width={50}
+        height={50}
+        alt="icon"
+      />
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className="font-medium whitespace-pre text-black dark:text-white"
       >
-        <p className="text-2xl">Peperfy</p>
+        <p className="text-2xl">Paperfy</p>
       </motion.span>
     </a>
   );
@@ -113,7 +119,14 @@ export const LogoIcon = () => {
       href="#"
       className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black"
     >
-      <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
+      {/* <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" /> */}
+      <Image
+        src= {"/icon-removebg-preview.png"}
+        className="h-7 w-6 "
+        width={50}
+        height={50}
+        alt="icon"
+      />
     </a>
   );
 };

@@ -10,11 +10,17 @@ import os from 'os';
 import path from "path";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { RunnableSequence } from "@langchain/core/runnables";
+//import IORedis from 'ioredis';
+import redis from "@/lib/redis";
 
-const redisConnection = {
-    host: process.env.REDIS_HOST || 'localhost',
-    port: Number(process.env.REDIS_PORT) || 6379
-}
+// const redisConnection = {
+//     host: process.env.REDIS_HOST || 'localhost',
+//     port: Number(process.env.REDIS_PORT) || 6379
+// }
+
+// const redisConnection = new IORedis("redis://default:BBEFuBpgdRcjapOtuuPsKVaihyxEZewS@turntable.proxy.rlwy.net:33985",{
+//     maxRetriesPerRequest: null
+// });
 
 const headingKeywords = [
   "abstract",
@@ -127,7 +133,9 @@ const worker = new Worker("file-upload-queue",
             });
 
             const vectorStore = await QdrantVectorStore.fromDocuments(splitDocs, embeddings, {
-                url: process.env.QDRANT_URL || "http://localhost:6333",
+                // url: process.env.QDRANT_URL || "http://localhost:6333",
+                url: "https://c1ced9de-55f4-4ece-9fb5-12d97bf51073.us-west-2-0.aws.cloud.qdrant.io",
+                apiKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIn0.Qkz1tL1HMpcIgXkHc8WzP9jJZGd8xMdKt8VnpfecDKI",
                 collectionName: `pdf-${paperId}`,
             });
 
@@ -140,7 +148,7 @@ const worker = new Worker("file-upload-queue",
     },
     {
         concurrency: 100,
-        connection: redisConnection
+        connection: redis
     }
 )
 

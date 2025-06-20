@@ -4,6 +4,7 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useEffect, useState } from "react";
+import { Spinner } from "./Spinner";
 
 interface Paper {
     id: string,
@@ -20,6 +21,7 @@ export function MyPaperDashboard({userId,page}:{userId: string, page: number}){
     const [papers,setpapers] = useState<Paper[]>([]);
     const [totalPages,settotalPages] = useState(0);
     const [currentPage,setcurrentPage] = useState(1);
+    const [loading, setloading] = useState(true);
     const limit = 10;
 
     useEffect(()=>{
@@ -34,6 +36,7 @@ export function MyPaperDashboard({userId,page}:{userId: string, page: number}){
         setpapers(res.data.papers);
         settotalPages(res.data.totalPages);
         setcurrentPage(res.data.currentPage);
+        setloading(false);
       }
       fetchPapers();
     },[userId])
@@ -47,7 +50,11 @@ export function MyPaperDashboard({userId,page}:{userId: string, page: number}){
                     My Uploaded Papers
                 </h1>
 
-                {papers.length === 0 ? (
+                {loading ? (
+                  <div className="flex justify-center items-center h-96"> <Spinner/> </div>
+                ): (
+
+                papers.length === 0 ? (
                     <p className="text-center text-gray-600 dark:text-gray-300">
                     No papers found.
                     </p>
@@ -76,7 +83,8 @@ export function MyPaperDashboard({userId,page}:{userId: string, page: number}){
                         )}
                     </div>
                 </>
-                )}
+                )
+              )}
             </div>
         </div>
     )
