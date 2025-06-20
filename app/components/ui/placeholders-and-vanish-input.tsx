@@ -42,8 +42,11 @@ export function PlaceholdersAndVanishInput({
     };
   }, [placeholders]);
 
+  type RawPixelData = { x: number; y: number; color: number[] };
+  type PixelData = { x: number; y: number; r: number; color: string };
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const newDataRef = useRef<any[]>([]);
+  const newDataRef = useRef<PixelData[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState("");
   const [animating, setAnimating] = useState(false);
@@ -67,12 +70,12 @@ export function PlaceholdersAndVanishInput({
 
     const imageData = ctx.getImageData(0, 0, 800, 800);
     const pixelData = imageData.data;
-    const newData: any[] = [];
+    const newData: RawPixelData[] = [];
 
     for (let t = 0; t < 800; t++) {
-      let i = 4 * t * 800;
+      const i = 4 * t * 800;
       for (let n = 0; n < 800; n++) {
-        let e = i + 4 * n;
+        const e = i + 4 * n;
         if (
           pixelData[e] !== 0 &&
           pixelData[e + 1] !== 0 &&
@@ -106,7 +109,7 @@ export function PlaceholdersAndVanishInput({
 
   const animate = (start: number) => {
     const animateFrame = (pos: number = 0) => {
-      requestAnimationFrame(() => {
+        const id = requestAnimationFrame(() => {
         const newArr = [];
         for (let i = 0; i < newDataRef.current.length; i++) {
           const current = newDataRef.current[i];
