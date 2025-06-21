@@ -3,7 +3,7 @@ import axios from "axios";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback  } from "react";
 import { Spinner } from "./Spinner";
 
 interface Paper {
@@ -22,26 +22,68 @@ export function MyPaperDashboard({userId,page}:{userId: string, page: number}){
     const [totalPages,settotalPages] = useState(0);
     const [currentPage,setcurrentPage] = useState(1);
     const [loading, setloading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const limit = 10;
 
-    useEffect(()=>{
-      async function fetchPapers(){
-        const res = await axios.get("/api/getpapers",{
-          params:{
-              userId,
-              page,
-              limit
-          }
-        })
-        setpapers(res.data.papers);
-        settotalPages(res.data.totalPages);
-        setcurrentPage(res.data.currentPage);
-        setloading(false);
-      }
-      fetchPapers();
-    },[userId])
+    const fetchPapers = useCallback(async () => {
+        setloading(true);
+        setError(null);
+        try {
+            const res = await axios.get("/api/getpapers", {
+                params: { userId, page, limit },
+                timeout: 10000 // 10 second timeout
+            });
+            setpapers(res.data.papers);
+            settotalPages(res.data.totalPages);
+            setcurrentPage(res.data.currentPage);
+        } catch (err) {
+            console.error("Failed to fetch papers:", err);
+            setError("Failed to load papers. Please try again.");
+        } finally {
+            setloading(false);
+        }
+    }, [userId, page, limit]);
+
+     useEffect(() => {
+        fetchPapers();
+    }, [fetchPapers]);
+
+    // useEffect(()=>{
+    //   async function fetchPapers(){
+    //     console.time('fetchPapers');
+    //     const res = await axios.get("/api/getpapers",{
+    //       params:{
+    //           userId,
+    //           page,
+    //           limit
+    //       }
+    //     })
+    //     console.timeEnd('fetchPapers');
+    //     setpapers(res.data.papers);
+    //     settotalPages(res.data.totalPages);
+    //     setcurrentPage(res.data.currentPage);
+    //     setloading(false);
+    //   }
+    //   fetchPapers();
+    // },[userId])
     
     // const { papers, totalPages, currentPage } = res.data;
+
+    if (error) {
+      return (
+          <div className="flex-1 overflow-y-auto">
+              <div className="min-h-full p-4 md:p-8 max-w-4xl mx-auto">
+                  <div className="text-red-500 text-center my-8">{error}</div>
+                  <button 
+                      onClick={fetchPapers}
+                      className="block mx-auto px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                      Retry
+                  </button>
+              </div>
+          </div>
+      );
+    }
 
     return(
         <div className="flex-1 overflow-y-auto">

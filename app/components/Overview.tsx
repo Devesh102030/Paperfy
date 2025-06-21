@@ -10,23 +10,52 @@ export default function Overview({ paperId}: { paperId: string }) {
   const [overview,setoverview] = useState("");
   const [loading,setLoading] = useState(true);
 
-  useEffect(()=>{
-        async function fetchOverview(){
-            const res = await axios.get("/api/getoverview",{
-                params:{
-                    paperId
-                }
-            })
-            
-            if(res.data.overview){
-              setoverview(res.data.overview);
-              setLoading(false);
-            }else{
-              setTimeout(fetchOverview,2000);
-            }
+  useEffect(() => {
+  let isMounted = true;
+  let retries = 0;
+  let maxRetries = 10; // Stop after 10 attempts (20 seconds)
+  let timeoutId: NodeJS.Timeout;
+
+  const fetchOverview = async () => {
+    const tempOverview = localStorage.getItem(`Markedoverview-${paperId}`);
+    if(tempOverview){
+      setoverview(tempOverview);    
+      setLoading(false);
+    }
+    else{
+      try {
+        const res = await axios.get("/api/getoverview", {
+          params: { paperId },
+        });
+
+        if (res.data.overview && isMounted) {
+          localStorage.setItem(`Markedoverview-${paperId}`, res.data.overview);
+          setoverview(res.data.overview);
+          setLoading(false);
+        } else if (isMounted && retries < maxRetries) {
+          retries++;
+          timeoutId = setTimeout(fetchOverview, 2000);
+        } else {
+          // Stop retrying after maxRetries
+          setLoading(false);
+          console.warn("Overview not available after max retries.");
         }
-        fetchOverview();
-  },[paperId])
+      } catch (error) {
+        console.error("Error fetching overview:", error);
+        setLoading(false);
+      }
+    }
+  };
+
+  fetchOverview();
+
+  return () => {
+    isMounted = false;
+    clearTimeout(timeoutId);
+  };
+}, [paperId]);
+
+
 
   return (
     <div className="flex flex-col h-full">

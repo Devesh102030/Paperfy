@@ -42,7 +42,6 @@ export async function POST(req: NextRequest) {
             data:{
                 title,
                 pdfUrl,
-                content: "",
                 userId: user.id
             }
         })

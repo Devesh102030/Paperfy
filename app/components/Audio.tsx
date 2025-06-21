@@ -3,16 +3,15 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import removeMarkdown from "remove-markdown";
 import { Spinner } from "./Spinner";
+import { useUploadThing } from "../utils/uploadthingfile"; 
 
 interface OverviewAudioProps {
   paperId: string;
 }
 
 export default function OverviewAudio({ paperId }: OverviewAudioProps) {
-  //const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [audioUrl, setAudioUrl] = useState("");
-  //const [audio64, setAudio64] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -28,6 +27,9 @@ export default function OverviewAudio({ paperId }: OverviewAudioProps) {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
+  const { startUpload, isUploading } = useUploadThing("audioUploader");
+
+
   const fetchAudioAndText = useCallback(async () => {
     setLoading(true);
     try {
@@ -37,17 +39,15 @@ export default function OverviewAudio({ paperId }: OverviewAudioProps) {
       const plainText = removeMarkdown(overview);
       //setText(plainText);
       setOverview(plainText);
+      localStorage.setItem(`overview-${paperId}`, plainText);
 
       // 2. Try fetching audio from DB
       const audioRes = await axios.get("/api/getaudio", { params: { paperId } });
-      const existingAudio64 = audioRes.data?.audio;
+      const existingAudioUrl = audioRes.data?.audio;
 
-      if (existingAudio64) {
-        // Audio found in DB
-        const blob = base64ToBlob(existingAudio64);
-        const url = URL.createObjectURL(blob);
-        setAudioUrl(url);
-        //setAudio64(existingAudio64);
+       if (existingAudioUrl) {
+        localStorage.setItem(`audioUrl-${paperId}`, existingAudioUrl);
+        setAudioUrl(existingAudioUrl);
       } else {
         // 3. Audio not found — call Murf API
         const data = {
@@ -55,7 +55,7 @@ export default function OverviewAudio({ paperId }: OverviewAudioProps) {
           voice_id: "en-US-ronnie",
           style: "Narration",
           multiNativeLocale: "en-IN",
-          encodeAsBase64: true,
+          encodeAsBase64: false,
         };
 
         const murfRes = await axios.post(
@@ -65,25 +65,54 @@ export default function OverviewAudio({ paperId }: OverviewAudioProps) {
             headers: {
               "Content-Type": "application/json",
               Accept: "application/json",
-              "api-key": "ap2_21732987-89e5-49dc-b864-54a22263e2f6",
+              "api-key": "ap2_d96e5dc8-5c05-4379-a295-560f0b5087b8",
             },
           }
         );
 
-        const base64Audio = murfRes.data.encodedAudio;
+        const murfAudioUrl = murfRes.data.audioFile;
 
-        // 4. Store audio to DB
-        await axios.post("/api/saveaudio", {
-          paperId,
-          audio: base64Audio,
+        console.log(murfAudioUrl);
+
+        setAudioUrl(murfAudioUrl);
+
+        const response = await fetch(murfAudioUrl);
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch audio: ${response.statusText}`);
+        }
+        
+        const blob = await response.blob();
+        const file = new File([blob], `${paperId}-audio.wav`, { 
+          type: "audio/wav" 
         });
 
-        // 5. Play the audio
-        const blob = base64ToBlob(base64Audio);
-        const url = URL.createObjectURL(blob);
-        setAudioUrl(url);
-        //setAudio64(base64Audio);
-      }
+        console.log("Uploading file:", file);
+        console.log("Size:", file.size);
+        console.log("Type:", file.type);
+
+         // Step 3: Upload to UploadThing
+        console.log("Uploading to UploadThing...");
+        const uploadResult = await startUpload([file]);
+        
+        if (!uploadResult || !uploadResult[0]) {
+          throw new Error("Upload failed - no result returned");
+        }
+
+        const uploadedUrl = uploadResult[0].ufsUrl;
+        console.log("Upload successful:", uploadedUrl);
+
+        setAudioUrl(uploadedUrl);
+        
+        // Step 4: Save to database
+        console.log("Saving to database...");
+        const dbResponse = await axios.post("/api/saveaudio", {
+          paperId,
+          audioUrl: uploadedUrl,
+        });
+        
+        console.log("Audio URL saved to database:", dbResponse.data);
+     }
     } catch (error) {
       console.error("Error fetching audio:", error);
     } finally {
@@ -91,15 +120,6 @@ export default function OverviewAudio({ paperId }: OverviewAudioProps) {
     }
   }, [paperId]);
 
-  const base64ToBlob = (base64: string) => {
-    const byteCharacters = atob(base64);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    return new Blob([byteArray], { type: "audio/wav" });
-  };
 
   const jumpAhead = () => {
     if (audioRef.current) {
@@ -145,50 +165,43 @@ export default function OverviewAudio({ paperId }: OverviewAudioProps) {
     audioRef.current.currentTime = seekTime;
   };
 
-  
   useEffect(() => {
-    if (!audioLoaded) {
+    const cachedUrl = localStorage.getItem(`audioUrl-${paperId}`);
+    const cachedOverview = localStorage.getItem(`overview-${paperId}`);
+
+    if (cachedUrl) setAudioUrl(cachedUrl);
+    if (cachedOverview) setOverview(cachedOverview);
+
+    if (!cachedUrl || !cachedOverview) {
       fetchAudioAndText().then(() => setAudioLoaded(true));
+    } else {
+      setAudioLoaded(true);
     }
-  }, [fetchAudioAndText, audioLoaded]);
+  }, [paperId, fetchAudioAndText]);
+
 
   // Calculate progress percentage with proper bounds checking
   const progressPercentage = duration > 0 ? Math.max(0, Math.min(100, (currentTime / duration) * 100)) : 0;
 
-  // useEffect(() => {
-  //   fetchAudioAndText();
-  // }, [fetchAudioAndText]);
-
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio || !audioUrl) return;
+
+    console.log("Setting up audio event listeners");
 
     const updateTime = () => {
       setCurrentTime(audio.currentTime);
     };
 
     const updateDuration = () => {
+      console.log("Duration changed:", audio.duration);
       if (audio.duration && isFinite(audio.duration)) {
         setDuration(audio.duration);
       }
     };
 
-    const handleLoadedMetadata = () => {
-      if (audio.duration && isFinite(audio.duration)) {
-        setDuration(audio.duration);
-      }
-    };
-
-    const handleLoadedData = () => {
-      if (audio.duration && isFinite(audio.duration)) {
-        setDuration(audio.duration);
-      }
-    };
-
-    const handleCanPlay = () => {
-      if (audio.duration && isFinite(audio.duration)) {
-        setDuration(audio.duration);
-      }
+    const handleError = () => {
+      console.error("Audio error:", audio.error);
     };
 
     const handleEnded = () => {
@@ -199,32 +212,32 @@ export default function OverviewAudio({ paperId }: OverviewAudioProps) {
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
 
-    // Add multiple event listeners to ensure duration is captured
+    // Add event listeners
     audio.addEventListener('timeupdate', updateTime);
-    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
-    audio.addEventListener('loadeddata', handleLoadedData);
-    audio.addEventListener('canplay', handleCanPlay);
     audio.addEventListener('durationchange', updateDuration);
+    audio.addEventListener('loadedmetadata', updateDuration);
     audio.addEventListener('ended', handleEnded);
     audio.addEventListener('play', handlePlay);
     audio.addEventListener('pause', handlePause);
+    audio.addEventListener('error', handleError);
 
-    // Try to get duration immediately if audio is already loaded
-    if (audio.duration && isFinite(audio.duration)) {
-      setDuration(audio.duration);
+    // Check if metadata is already loaded
+    if (audio.readyState > 0) {
+      updateDuration();
     }
 
     return () => {
+      // Clean up event listeners
       audio.removeEventListener('timeupdate', updateTime);
-      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      audio.removeEventListener('loadeddata', handleLoadedData);
-      audio.removeEventListener('canplay', handleCanPlay);
       audio.removeEventListener('durationchange', updateDuration);
+      audio.removeEventListener('loadedmetadata', updateDuration);
       audio.removeEventListener('ended', handleEnded);
       audio.removeEventListener('play', handlePlay);
       audio.removeEventListener('pause', handlePause);
+      audio.removeEventListener('error', handleError);
     };
   }, [audioUrl]); // Re-run when audioUrl changes
+
 
   return (
     <div className="space-y-4">
@@ -234,11 +247,18 @@ export default function OverviewAudio({ paperId }: OverviewAudioProps) {
         <>
         <div className="m-6 mt-6 sm:mt-10 relative z-10 rounded-xl shadow-xl">
           <audio 
-            ref={audioRef} 
-            src={audioUrl} 
-            className="w-full hidden"
-            preload="metadata"
-          />
+              ref={audioRef} 
+              src={audioUrl} 
+              className="w-full hidden"
+              preload="auto"
+              onLoadedMetadata={() => {
+                const audio = audioRef.current;
+                if (audio?.duration && isFinite(audio.duration)) {
+                  console.log("Manually setting duration:", audio.duration);
+                  setDuration(audio.duration);
+                }
+              }}
+            />
           
           <div className="bg-white border-slate-100 transition-all duration-500 dark:bg-slate-800 dark:border-slate-500 border-b rounded-t-xl p-4 pb-6 sm:p-10 sm:pb-8 lg:p-6 xl:p-10 xl:pb-8 space-y-6 sm:space-y-8 lg:space-y-6 xl:space-y-8">
             <div className="flex items-center space-x-4">
@@ -359,3 +379,28 @@ export default function OverviewAudio({ paperId }: OverviewAudioProps) {
     </div>
   );
 }
+
+
+
+//56884b7f29831b4056f47ecd7c30ccf558194167
+
+
+// const data = {
+//           text: plainText,
+//           voice_id: "en-US-ronnie",
+//           style: "Narration",
+//           multiNativeLocale: "en-IN",
+//           encodeAsBase64: false,
+//         };
+
+//         const murfRes = await axios.post(
+//           "https://api.murf.ai/v1/speech/generate",
+//           data,
+//           {
+//             headers: {
+//               "Content-Type": "application/json",
+//               Accept: "application/json",
+//               "api-key": "ap2_d96e5dc8-5c05-4379-a295-560f0b5087b8",
+//             },
+//           }
+//         );
