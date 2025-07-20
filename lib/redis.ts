@@ -6,7 +6,7 @@ declare global {
 }
 /* eslint-enable no-var */
 
-const redis = global.redis ?? new IORedis("redis://default:BBEFuBpgdRcjapOtuuPsKVaihyxEZewS@turntable.proxy.rlwy.net:33985", {
+const redis = global.redis ?? new IORedis("redis://:3tp8b1v2Z6qV79j0BQLfslwDdyI4YnS5@cgk1.clusters.zeabur.com:31347", {
   maxRetriesPerRequest: null,
 });
 
