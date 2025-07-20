@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { PlaceholdersAndVanishInput } from "./ui/placeholders-and-vanish-input";
 
-export function Chat({ paperId }: { paperId: string }) {
+export function Chat({ paperId, userId }: { paperId: string, userId: string }) {
   const [query, setquery] = useState("");
   const [messages, setmessages] = useState<{ role: "user" | "ai"; text: string }[]>([]);
   const [loading, setLoading] = useState(false);
@@ -17,33 +17,47 @@ export function Chat({ paperId }: { paperId: string }) {
   ];
 
   useEffect(() => {
-    const stored = localStorage.getItem(`chat-${paperId}`);
-    if (stored) {
+    async function loadChat() {
       try {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) {
-          setmessages(parsed);
-        }
+        const res = await axios.get("/api/getchat", {
+          params: { paperId, userId },
+        });
+        const chat = res.data.chat as { role: "user" | "ai"; content: string }[];
+        const formatted = chat.map(msg => ({ role: msg.role, text: msg.content }));
+        setmessages(formatted);
       } catch (e) {
-        console.error("Failed to parse localStorage data", e);
+        console.error("Failed to load chat", e);
       }
     }
-    setInitialized(true);
-  }, [paperId]);
+
+    loadChat();
+  }, [paperId, userId]);
 
   // Scroll to bottom on new message
    useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    if (initialized) {
-      localStorage.setItem(`chat-${paperId}`, JSON.stringify(messages));
-    }
   }, [messages, paperId, initialized]);
+
+
+  const saveMessage = async (role: "user" | "ai", text: string) => {
+    try {
+      await axios.post("/api/savechat", {
+        role,
+        content: text,
+        paperId,
+        userId,
+      });
+    } catch (err) {
+      console.error("Failed to save message", err);
+    }
+  };
 
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const userMessage: { role: "user", text: string } = { role: "user", text: query };
     setmessages((prev) => [...prev, userMessage]);
+    await saveMessage("user", query);
     setquery("");
     setLoading(true);
 
@@ -55,8 +69,41 @@ export function Chat({ paperId }: { paperId: string }) {
         },
       });
 
-      const aiMessage: { role: "ai", text: string } = { role: "ai", text: res.data.answer };
-      setmessages((prev) => [...prev, aiMessage]);
+      // const aiMessage: { role: "ai", text: string } = { role: "ai", text: res.data.answer };
+      // setmessages((prev) => [...prev, aiMessage]);
+      const fullText = res.data.answer;
+
+      let currentText = "";
+
+      setmessages((prev) => [...prev, { role: "ai", text: "" }]); // Start with empty AI message
+
+      let index = 0;
+
+      const typeInterval = setInterval(() => {
+        if (index < fullText.length) {
+          currentText += fullText[index];
+          index++;
+
+          setmessages((prevMessages) => {
+            const lastMessage = prevMessages[prevMessages.length - 1];
+
+            // Only update the last AI message
+            if (lastMessage.role === "ai") {
+              return [
+                ...prevMessages.slice(0, -1),
+                { ...lastMessage, text: currentText },
+              ];
+            } else {
+              return prevMessages;
+            }
+          });
+        } else {
+          clearInterval(typeInterval);
+          setLoading(false);
+        }
+      }, 20); // Speed (20ms per character)
+
+      await saveMessage("ai", fullText);
 
     }catch (err) {
 
@@ -89,8 +136,8 @@ export function Chat({ paperId }: { paperId: string }) {
               key={index}
               className={`px-4 py-2 rounded-lg break-words ${
                 msg.role === "user"
-                  ? "bg-blue-500 text-white text-sm self-end ml-auto"
-                  : "bg-gray-200 text-black text-sm self-start mr-auto"
+                  ? "bg-blue-600 text-white text-sm self-end ml-auto shadow-md rounded-2xl px-4 py-2 max-w-[80%] transition-opacity duration-300 ease-in"
+                  : "bg-white/80 text-black text-sm self-start mr-auto border border-gray-300 rounded-2xl px-4 py-2 shadow max-w-[80%] transition-opacity duration-300 ease-in"
               }`}
               style={{ maxWidth: "80%", width: "fit-content" }}
             >

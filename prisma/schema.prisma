@@ -20,6 +20,7 @@ model User {
   accounts        Account[]
   papers          Paper[]
   notes           Note[]
+  chatMessages    ChatMessage[]
 }
 
 model Account {
@@ -69,6 +70,7 @@ model Paper {
   user       User        @relation(fields: [userId], references: [id])
   userId     String
   notes      Note[]
+  chatMessages    ChatMessage[]
 
   @@index([userId])
   @@index([createdAt])
@@ -91,3 +93,20 @@ model Note {
 }
 
 
+model ChatMessage {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  role      String   
+  createdAt DateTime @default(now())
+
+  // Relations
+  paper     Paper    @relation(fields: [paperId], references: [id])
+  paperId   String
+
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+
+  @@index([paperId])
+  @@index([userId])
+  @@index([createdAt])
+}
