@@ -4,8 +4,13 @@ import {compare} from "bcryptjs"
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google"; 
+import EmailProvider  from "next-auth/providers/email";
 import { JWT } from "next-auth/jwt";
 import { Session } from "next-auth";
+import { RaycastMagicLinkEmail } from "@/app/components/email-template";// adjust path if needed
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Define proper types for credentials
 interface Credentials {
@@ -54,7 +59,26 @@ export const NEXT_AUTH_CONFIG: AuthOptions = {
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID || "",
             clientSecret: process.env.GOOGLE_CLIENT_SECRET || ""
-        })
+        }),
+        EmailProvider({
+            server: {},
+            from: "Paperfy <paperfy@deveshparyani.tech>",
+            maxAge: 60 * 60 * 24, 
+            async sendVerificationRequest({ identifier, url, provider }) {
+                console.log("recieved");
+                try {
+                    await resend.emails.send({
+                        from: provider.from as string,
+                        to: ["deveshparyani17@gmail.com"],
+                        subject: "Your Paperfy Verification Link",
+                        react: RaycastMagicLinkEmail({ magicLink: url }),
+                    });
+                } catch (error) {
+                    console.error("Error sending verification email:", error);
+                    throw new Error("Unable to send verification email");
+                }
+            },
+        }),
     ],
     secret: process.env.NEXTAUTH_SECRET,
     session:{

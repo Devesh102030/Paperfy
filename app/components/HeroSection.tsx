@@ -50,7 +50,7 @@ export function HeroSection() {
         <div className="font-extralight text-base md:text-xl dark:text-neutral-200">
           Smarter research. Faster results. Made for students and researchers.
         </div>
-        <button onClick={handleUpload} className="bg-black dark:bg-white rounded-full w-fit text-white dark:text-black px-4 py-2 mt-6">
+        <button onClick={handleUpload} className="bg-black dark:bg-white rounded-full w-fit text-white dark:text-black px-4 py-2 mt-6 cursor-pointer">
           Upload now
         </button>
       </motion.div>

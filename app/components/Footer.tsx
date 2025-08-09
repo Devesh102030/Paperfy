@@ -46,7 +46,7 @@ export function Footer(){
                 
                 <div className="py-7 border-t border-gray-200">
                     <div className="flex items-center justify-center flex-col lg:justify-between lg:flex-row">
-                        <span className="text-sm text-gray-500 ">©<a href="https://pagedone.io/">peperfy</a> 2025, All rights reserved.</span>
+                        <span className="text-sm text-gray-500 ">©<a href="https://pagedone.io/">paperfy</a> 2025, All rights reserved.</span>
                         <div className="flex mt-4 space-x-4 sm:justify-center lg:mt-0 ">
                             <a href="javascript:;"  className="w-9 h-9 rounded-full bg-gray-700 flex justify-center items-center hover:bg-indigo-600">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
