@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { DotLoader } from "@/app/components/DotLoader";
@@ -10,9 +12,10 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { Suspense } from 'react'
 
 
-export default function ResetPasswordPage() {
+function MyComponent() {
   const params = useSearchParams();
   const token = params.get("token");
   const router = useRouter();
@@ -46,7 +49,7 @@ export default function ResetPasswordPage() {
     });
 
     const data = await res.json();
-    
+
     if (!res.ok){
         setLoading(false);
         return setError(data.error || "Something went wrong");
@@ -143,3 +146,12 @@ const LabelInputContainer = ({
     </div>
   );
 };
+
+
+export default function ResetPassword(){
+    return(
+        <Suspense>
+            <MyComponent/>
+        </Suspense>
+    )
+}
