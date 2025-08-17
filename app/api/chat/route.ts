@@ -47,7 +47,7 @@ export const GET = async (req: NextRequest) => {
     Instructions:
     - Base your answers strictly on the provided context. Do not invent or hallucinate information.
     - Rephrase and synthesize content into clear, natural, and academically appropriate language. Avoid copy-paste.
-    - If the answer is partially available, provide the available details and clearly state what is missing.
+    - If the answer is partially available, summarize what can be inferred from the context and clearly mention any missing pieces.
     - If the information is not present, respond: "The information is not clearly available in the provided context." You may briefly explain why it may not be covered.
     - For definitions or acronyms, expand them concisely if the meaning is obvious from context.
     - When presenting findings, results, or numerical values, summarize their implications (e.g., improvement, decline, comparison) rather than just listing raw numbers.
