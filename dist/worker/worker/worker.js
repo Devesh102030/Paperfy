@@ -45,7 +45,7 @@ const worker = new bullmq_1.Worker("file-upload-queue", async (job) => {
         const fullText = docs.map((doc) => doc.pageContent).join("\n");
         const model = new google_genai_1.ChatGoogleGenerativeAI({
             model: "gemini-2.0-flash",
-            apiKey: "AIzaSyArmAmGCdWzihI5Q78TAsrN3H5T05X_aYY"
+            apiKey: "AIzaSyD1ZVXtmH2uijtgtygnyNijcFNw3CUT3d8"
         });
         const prompt = prompts_1.PromptTemplate.fromTemplate(`
                 You are a helpful assistant. Summarize the following academic paper. Focus on key contributions, methodology, and results. Write the overview in a structured and readable way for technical readers.
