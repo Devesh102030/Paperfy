@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: "AIzaSyA97RkjY2bOWbmHZCW_pWZ0EKU2AenUY6Q" });
+const ai = new GoogleGenAI({ apiKey: "AIzaSyD1ZVXtmH2uijtgtygnyNijcFNw3CUT3d8" });
 
 export const GET = async (req: NextRequest) => {
   try {
@@ -22,8 +22,8 @@ export const GET = async (req: NextRequest) => {
 
     const vectorStore = await QdrantVectorStore.fromExistingCollection(embeddings, {
       //url: process.env.QDRANT_URL || "http://localhost:6333",
-      url: "https://c1ced9de-55f4-4ece-9fb5-12d97bf51073.us-west-2-0.aws.cloud.qdrant.io",
-      apiKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIn0.Qkz1tL1HMpcIgXkHc8WzP9jJZGd8xMdKt8VnpfecDKI",
+       url="https://e446722b-5de9-4aa9-b8e0-3b1d718bf18c.us-east-1-1.aws.cloud.qdrant.io:6333", 
+       api_key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIn0.VWxaTDkRIuDlAzgLF75VbNOaOZsZNjMXwP7f_giC9qA",
       collectionName: `pdf-${paperId}`,
     });
 
