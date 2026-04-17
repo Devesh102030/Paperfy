@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: "AQ.Ab8RN6ICImBAgTaRNxjGPjPkyFpgbX88tKp9xUjvUvPT9xdlrg" });
+const ai = new GoogleGenAI({ apiKey: "AQ.Ab8RN6K41QbWCLlQSwUsyOF37bApDq_W88PIVz2gYS6EawHWCA" });
 
 export const GET = async (req: NextRequest) => {
   try {
