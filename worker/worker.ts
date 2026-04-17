@@ -52,7 +52,7 @@ const worker = new Worker("file-upload-queue",
 
             const model = new ChatGoogleGenerativeAI({
                 model: "gemini-2.5-flash",
-                apiKey: "AIzaSyD1ZVXtmH2uijtgtygnyNijcFNw3CUT3d8"
+                apiKey: "AQ.Ab8RN6K41QbWCLlQSwUsyOF37bApDq_W88PIVz2gYS6EawHWCA"
             });
 
             const prompt = PromptTemplate.fromTemplate(`
@@ -134,8 +134,8 @@ const worker = new Worker("file-upload-queue",
 
             const vectorStore = await QdrantVectorStore.fromDocuments(splitDocs, embeddings, {
                 // url: process.env.QDRANT_URL || "http://localhost:6333",
-                  url="https://e446722b-5de9-4aa9-b8e0-3b1d718bf18c.us-east-1-1.aws.cloud.qdrant.io:6333", 
-                  api_key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIn0.VWxaTDkRIuDlAzgLF75VbNOaOZsZNjMXwP7f_giC9qA",
+                  url="https://e446722b-5de9-4aa9-b8e0-3b1d718bf18c.us-east-1-1.aws.cloud.qdrant.io", 
+                  api_key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIiwic3ViamVjdCI6ImFwaS1rZXk6YTIwMWVjNDUtMzg2Mi00MmFkLTg5ZWItOTAxNTgwNmRmOTdlIn0.pXYWO9WwqhxdiDbxhg001hRFmvS9d-NHQfIbN14BWeo",
                 collectionName: `pdf-${paperId}`,
             });
 
